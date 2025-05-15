@@ -1,0 +1,15 @@
+# Build directories
+bin/
+obj/
+
+# User-specific files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET Core files
+*.dbmdl
