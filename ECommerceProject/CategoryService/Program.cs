@@ -1,4 +1,6 @@
 using CategoryService.Data;
+using CategoryService.Factories;
+using CategoryService.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<CategoryDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<CategoryFactory>();
+
+
 
 var app = builder.Build();
 
