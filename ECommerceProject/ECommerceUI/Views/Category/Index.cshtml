@@ -1,0 +1,137 @@
+﻿@model ECommerceUI.Models.CategoryListViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .top-nav {
+        margin: 20px 0px;
+    }
+
+        .top-nav a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .action-buttons form {
+        display: inline;
+    }
+
+    .edit-row {
+        background-color: #fff9e6;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+        .form-row input {
+            width: 200px;
+        }
+
+        .form-row button {
+            padding: 8px 16px;
+        }
+</style>
+
+<div class="top-nav">
+    <a asp-controller="Home" asp-action="Index">← Back to Home</a>
+</div>
+
+<h2>Category Management</h2>
+
+<!-- Add New Category Form -->
+<form asp-action="Create" method="post">
+    <h4>Add New Category</h4>
+    <div class="form-row">
+        <input name="Name" placeholder="Name" required />
+        <input name="Type" placeholder="Type" required />
+        <button type="submit">Add Category</button>
+    </div>
+</form>
+
+<!-- Category List Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Categories)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Type</td>
+                <td class="action-buttons">
+                    <form asp-action="Delete" method="post" asp-route-id="@item.Id">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form asp-action="Index" method="get">
+                        <input type="hidden" name="editId" value="@item.Id" />
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+
+            @if (Model.EditCategory != null && Model.EditCategory.Id == item.Id)
+            {
+                <tr class="edit-row">
+                    <td colspan="3">
+                        <form asp-action="Edit" method="post">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input name="Name" value="@item.Name" placeholder="Name" required />
+                            <input name="Type" value="@item.Type" placeholder="Type" required />
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
