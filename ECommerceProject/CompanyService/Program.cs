@@ -1,5 +1,6 @@
 using CompanyService.Data;
 using CompanyService.Factories;
+using CompanyService.Interfaces;
 using CompanyService.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,8 @@ builder.Services.AddDbContext<CompanyDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddScoped<CompanyFactory>();
+builder.Services.AddScoped<ICompanyFactory, CompanyFactory>();
+
 
 var app = builder.Build();
 
