@@ -1,12 +1,13 @@
 ﻿using APIGatewayService.Data;
 using APIGatewayService.Models;
+using BCrypt.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using BCrypt.Net;
 
 
 namespace APIGatewayService.Controllers
@@ -25,13 +26,17 @@ namespace APIGatewayService.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(User user)
+        public async Task<IActionResult> Register(RegisterRequest register)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == user.Username))
+            if (await _context.Users.AnyAsync(u => u.Username == register.Username))
                 return BadRequest("Username already exists.");
 
-        
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+            var user = new User
+            {
+                Username = register.Username,
+                Email = register.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(register.Password)
+            };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -40,11 +45,13 @@ namespace APIGatewayService.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(User login)
+        public async Task<IActionResult> Login(LoginRequest login)
         {
+            if (login == null || string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
+                return BadRequest("Username and password are required.");
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == login.Username);
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(login.PasswordHash, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.PasswordHash))
                 return Unauthorized("Invalid username or password.");
 
             var token = GenerateJwtToken(user);

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using APIGatewayService.Models;
-
 
 namespace APIGatewayService.Controllers
 {
@@ -38,22 +38,12 @@ namespace APIGatewayService.Controllers
                 return BadRequest("Invalid service");
 
             var client = _httpClientFactory.CreateClient("ForwardingClient");
+            var forwardUrl = $"{_serviceMap[service.ToLower()]}/{path}";
 
-            var serviceUrl = _serviceMap[service.ToLower()];
+            var request = new HttpRequestMessage(HttpMethod.Get, forwardUrl);
+            ForwardAuthorizationHeader(request);
 
-            var forwardUrl = $"{serviceUrl}/{path}";
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, forwardUrl);
-
-            if (Request.Headers.ContainsKey("Authorization"))
-            {
-                requestMessage.Headers.Authorization =
-                    AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            }
-            Console.WriteLine($"Forwarding request to: {forwardUrl}");
-
-            var response = await client.SendAsync(requestMessage);
-
+            var response = await client.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
 
             return StatusCode((int)response.StatusCode, content);
@@ -66,29 +56,66 @@ namespace APIGatewayService.Controllers
                 return BadRequest("Invalid service");
 
             var client = _httpClientFactory.CreateClient("ForwardingClient");
+            var forwardUrl = $"{_serviceMap[service.ToLower()]}/{path}";
 
-            var serviceUrl = _serviceMap[service.ToLower()];
-
-            var forwardUrl = $"{serviceUrl}/{path}";
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, forwardUrl)
+            var request = new HttpRequestMessage(HttpMethod.Post, forwardUrl)
             {
-                Content = new StringContent(System.Text.Json.JsonSerializer.Serialize(body), System.Text.Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
             };
+            ForwardAuthorizationHeader(request);
 
-            if (Request.Headers.ContainsKey("Authorization"))
-            {
-                requestMessage.Headers.Authorization =
-                    AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            }
-
-            var response = await client.SendAsync(requestMessage);
-
+            var response = await client.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
 
             return StatusCode((int)response.StatusCode, content);
         }
-    }
 
- 
+        [HttpPut("{service}/{**path}")]
+        public async Task<IActionResult> Put(string service, string path, [FromBody] object body)
+        {
+            if (!_serviceMap.ContainsKey(service.ToLower()))
+                return BadRequest("Invalid service");
+
+            var client = _httpClientFactory.CreateClient("ForwardingClient");
+            var forwardUrl = $"{_serviceMap[service.ToLower()]}/{path}";
+
+            var request = new HttpRequestMessage(HttpMethod.Put, forwardUrl)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json")
+            };
+            ForwardAuthorizationHeader(request);
+
+            var response = await client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            return StatusCode((int)response.StatusCode, content);
+        }
+
+        [HttpDelete("{service}/{**path}")]
+        public async Task<IActionResult> Delete(string service, string path)
+        {
+            if (!_serviceMap.ContainsKey(service.ToLower()))
+                return BadRequest("Invalid service");
+
+            var client = _httpClientFactory.CreateClient("ForwardingClient");
+            var forwardUrl = $"{_serviceMap[service.ToLower()]}/{path}";
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, forwardUrl);
+            ForwardAuthorizationHeader(request);
+
+            var response = await client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+
+            return StatusCode((int)response.StatusCode, content);
+        }
+
+        private void ForwardAuthorizationHeader(HttpRequestMessage request)
+        {
+            if (Request.Headers.ContainsKey("Authorization"))
+            {
+                request.Headers.Authorization =
+                    AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+            }
+        }
+    }
 }

@@ -1,0 +1,43 @@
+﻿@model RegisterViewModel
+
+<h2 style="text-align: center; margin-bottom: 20px;">Register</h2>
+
+<form asp-action="Index" method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+    <div style="margin-bottom: 15px;">
+        <label asp-for="Username" style="display: block; margin-bottom: 5px;"></label>
+        <input asp-for="Username" class="form-control" style="width: 100%; padding: 8px;" />
+        <span asp-validation-for="Username" style="color: red; font-size: 0.9em;"></span>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label asp-for="Email" style="display: block; margin-bottom: 5px;"></label>
+        <input asp-for="Email" class="form-control" style="width: 100%; padding: 8px;" />
+        <span asp-validation-for="Email" style="color: red; font-size: 0.9em;"></span>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label asp-for="Password" style="display: block; margin-bottom: 5px;"></label>
+        <input asp-for="Password" type="password" class="form-control" style="width: 100%; padding: 8px;" />
+        <span asp-validation-for="Password" style="color: red; font-size: 0.9em;"></span>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <label asp-for="ConfirmPassword" style="display: block; margin-bottom: 5px;"></label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" style="width: 100%; padding: 8px;" />
+        <span asp-validation-for="ConfirmPassword" style="color: red; font-size: 0.9em;"></span>
+    </div>
+
+    <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px;">
+        Register
+    </button>
+
+    <p style="text-align: center; margin-top: 15px;">
+        Already have an account?
+        <a asp-controller="Login" asp-action="Index">Login here</a>
+    </p>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

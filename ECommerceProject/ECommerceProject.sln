@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyService", "CompanySe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIGatewayService", "APIGatewayService\APIGatewayService.csproj", "{C51B130E-0471-4912-9399-17AB14F64865}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerceUI", "ECommerceUI\ECommerceUI.csproj", "{F346DE9F-7E42-413D-ABA4-D43C5A4A463B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C51B130E-0471-4912-9399-17AB14F64865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C51B130E-0471-4912-9399-17AB14F64865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C51B130E-0471-4912-9399-17AB14F64865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F346DE9F-7E42-413D-ABA4-D43C5A4A463B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F346DE9F-7E42-413D-ABA4-D43C5A4A463B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F346DE9F-7E42-413D-ABA4-D43C5A4A463B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F346DE9F-7E42-413D-ABA4-D43C5A4A463B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
