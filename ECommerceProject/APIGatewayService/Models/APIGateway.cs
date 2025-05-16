@@ -16,4 +16,10 @@
 
         public string Role { get; set; } = "User";  
     }
+    public class MicroserviceSettings
+    {
+        public string Category { get; set; }
+        public string Product { get; set; }
+        public string Company { get; set; }
+    }
 }
