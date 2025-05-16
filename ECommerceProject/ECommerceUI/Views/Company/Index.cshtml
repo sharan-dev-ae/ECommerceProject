@@ -1,0 +1,157 @@
+﻿@model ECommerceUI.Models.CompanyListViewModel
+@{
+    ViewData["Title"] = "Companies";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .top-nav {
+        margin: 20px 0px;
+    }
+
+        .top-nav a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .action-buttons form {
+        display: inline;
+    }
+
+    .edit-row {
+        background-color: #fff9e6;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+        .form-row input {
+            width: 150px;
+        }
+
+        .form-row button {
+            padding: 8px 16px;
+        }
+</style>
+
+<div class="top-nav">
+    <a asp-controller="Home" asp-action="Index">← Back to Home</a>
+</div>
+
+<h2>Company Management</h2>
+
+
+<form asp-action="Create" method="post">
+    <h4>Add New Company</h4>
+    <div class="form-row">
+        <input name="Name" placeholder="Name" required />
+        <input name="StreetAddress" placeholder="Street Address" required />
+        <input name="City" placeholder="City" required />
+        <input name="State" placeholder="State" required />
+        <input name="PostalAddress" placeholder="Postal Address" required />
+        <input name="Zip" placeholder="Zip" required />
+        <input name="ContactNumber" placeholder="Contact Number" required />
+        <button type="submit">Add Company</button>
+    </div>
+</form>
+
+<!-- Company List Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Postal</th>
+            <th>Zip</th>
+            <th>Contact</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Companies)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.StreetAddress</td>
+                <td>@item.City</td>
+                <td>@item.State</td>
+                <td>@item.PostalAddress</td>
+                <td>@item.Zip</td>
+                <td>@item.ContactNumber</td>
+                <td class="action-buttons">
+                    <form asp-action="Delete" method="post" asp-route-id="@item.Id">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form asp-action="Index" method="get">
+                        <input type="hidden" name="editId" value="@item.Id" />
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+
+            @if (Model.EditCompany != null && Model.EditCompany.Id == item.Id)
+            {
+                <tr class="edit-row">
+                    <td colspan="8">
+                        <form asp-action="Edit" method="post">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input name="Name" value="@item.Name" required />
+                            <input name="StreetAddress" value="@item.StreetAddress" required />
+                            <input name="City" value="@item.City" required />
+                            <input name="State" value="@item.State" required />
+                            <input name="PostalAddress" value="@item.PostalAddress" required />
+                            <input name="Zip" value="@item.Zip" required />
+                            <input name="ContactNumber" value="@item.ContactNumber" required />
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
