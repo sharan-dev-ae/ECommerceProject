@@ -1,0 +1,153 @@
+﻿@model ECommerceUI.Models.ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .top-nav {
+        margin: 20px 0px;
+    }
+
+        .top-nav a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    input, button {
+        margin: 5px;
+        padding: 8px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .action-buttons form {
+        display: inline;
+    }
+
+    .edit-row {
+        background-color: #fff9e6;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+        .form-row input {
+            width: 150px;
+        }
+
+            .form-row input[type="number"] {
+                width: 100px;
+            }
+
+        .form-row button {
+            padding: 8px 16px;
+        }
+</style>
+
+<div class="top-nav">
+    <a asp-controller="Home" asp-action="Index">← Back to Home</a>
+</div>
+
+<h2>Product Management</h2>
+
+<!-- Add New Product Form -->
+<form asp-action="Create" method="post">
+    <h4>Add New Product</h4>
+    <div class="form-row">
+        <input name="Name" placeholder="Name" required />
+        <input name="CategoryName" placeholder="Category" required />
+        <input name="Manufacturer" placeholder="Manufacturer" required />
+        <input name="Quantity" type="number" placeholder="Quantity" required />
+        <input name="Price" type="number" step="0.01" placeholder="Price" required />
+        <button type="submit">Add Product</button>
+    </div>
+</form>
+
+<!-- Product List Table -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Manufacturer</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.CategoryName</td>
+                <td>@item.Manufacturer</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("F2")</td>
+                <td class="action-buttons">
+                    <form asp-action="Delete" method="post" asp-route-id="@item.Id">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <form asp-action="Index" method="get">
+                        <input type="hidden" name="editId" value="@item.Id" />
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+
+            @if (Model.EditProduct != null && Model.EditProduct.Id == item.Id)
+            {
+                <tr class="edit-row">
+                    <td colspan="6">
+                        <form asp-action="Edit" method="post">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input name="Name" value="@item.Name" placeholder="Name" required style="width: 150px;" />
+                            <input name="CategoryName" value="@item.CategoryName" placeholder="Category" required style="width: 150px;" />
+                            <input name="Manufacturer" value="@item.Manufacturer" placeholder="Manufacturer" required style="width: 150px;" />
+                            <input name="Quantity" type="number" value="@item.Quantity" placeholder="Quantity" required style="width: 100px;" />
+                            <input name="Price" type="number" step="0.01" value="@item.Price" placeholder="Price" required style="width: 100px;" />
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
